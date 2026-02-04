@@ -1,2 +1,2 @@
 BEGIN { FS="," }
-$NF == "diaporthe-stem-canker" { print $0 }
+$NF == " diaporthe-stem-canker" { print $0 }
