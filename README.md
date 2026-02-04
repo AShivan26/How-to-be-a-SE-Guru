@@ -35,7 +35,7 @@ Each assignment directory or file contains comments explaining design decisions 
 
 ## Team Information
 
-**Group 10**
+**Group 8**
 
 ### Team Members
 - **Aniruddha Shivananda**  
@@ -44,6 +44,9 @@ Each assignment directory or file contains comments explaining design decisions 
 - **JonCarlo Migaly**  
   📧 jmigaly@ncsu.edu
 
+- **Patrick Parker**  
+  📧 pparker2@ncsu.edu
+ 
 ---
 
 ## Notes
