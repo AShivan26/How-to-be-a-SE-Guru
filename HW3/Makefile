@@ -9,7 +9,10 @@ all: $(PART1)
 
 # ── Shell ─────────────────────────────────────────────
 sh:
-	@bash -c ' \
+	@echo " _|_ |_  o ._  |    _|_    _|  _  "; \
+	echo "  |_ | | | | | |<    |    (_| (_) "; \
+	echo ""; \
+	bash -c ' \
 	export BASH_SILENCE_DEPRECATION_WARNING=1; \
 	if command -v tput >/dev/null 2>&1; then \
 		bold=$$(tput bold); col0=$$(tput sgr0); col1=$$(tput setaf 6); col2=$$(tput setaf 3); \
