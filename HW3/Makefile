@@ -69,6 +69,12 @@ $(OUTDIR)/S4: $(DATA)
 $(OUTDIR)/S5: $(DATA)
 	mkdir -p $(OUTDIR); gawk -f S5.awk $< > $@
 
+# ── Pycco Documentation ──────────────────────────────
+$(HOME)/tmp/%.html: %.py
+	@mkdir -p $(HOME)/tmp; \
+	pycco -d $(HOME)/tmp $<; \
+	echo '.docs p, .docs h1, .docs h2, .docs li { text-align: right !important }' >> $(HOME)/tmp/pycco.css
+
 clean:
 	rm -rf $(OUTDIR)
 
