@@ -3,9 +3,30 @@ OUTDIR = out
 
 PART1 = $(OUTDIR)/S1 $(OUTDIR)/S2 $(OUTDIR)/S3 $(OUTDIR)/S4 $(OUTDIR)/S5
 
-.PHONY: all clean sh
+.PHONY: all clean sh date files help push
+
+# ── Help (default) ───────────────────────────────────
+help:
+	@echo "make"; \
+	echo ""; \
+	echo "Usage:"; \
+	echo "  make <target>"; \
+	echo ""; \
+	echo "targets:"; \
+	echo "  date             show date"; \
+	echo "  files            show files"; \
+	echo "  help             show help."; \
+	echo "  sh               run my shell"
 
 all: $(PART1)
+
+# ── Date ─────────────────────────────────────────────
+date:
+	@date
+
+# ── Files ─────────────────────────────────────────────
+files:
+	@ls -la
 
 # ── Shell ─────────────────────────────────────────────
 sh:
