@@ -1,5 +1,6 @@
 DATA   = page_blocks_dirty.csv
 OUTDIR = out
+AWK    = $(shell command -v gawk 2>/dev/null || command -v awk 2>/dev/null || echo awk)
 
 PART1 = $(OUTDIR)/S1 $(OUTDIR)/S2 $(OUTDIR)/S3 $(OUTDIR)/S4 $(OUTDIR)/S5
 
@@ -20,15 +21,15 @@ help:
 
 all: $(PART1)
 
-# ── Date ─────────────────────────────────────────────
 date:
 	@date
 
-# ── Files ─────────────────────────────────────────────
 files:
 	@ls -la
 
-# ── Shell ─────────────────────────────────────────────
+push: 
+	@read -p "Reason? " msg; git commit -am "$$msg"; git push; git status
+
 sh:
 	@echo " _|_ |_  o ._  |    _|_    _|  _  "; \
 	echo "  |_ | | | | | |<    |    (_| (_) "; \
@@ -53,28 +54,26 @@ sh:
 	_prompt; \
 	exec bash'
 
-# ── Pycco Documentation ──────────────────────────────
 $(HOME)/tmp/%.html: %.py
 	@mkdir -p $(HOME)/tmp; \
 	pycco -d $(HOME)/tmp $<; \
 	echo '.docs p, .docs h1, .docs h2, .docs li { text-align: right !important }' >> $(HOME)/tmp/pycco.css
 
 
-# ── Part 1: gawk checks (S1–S5) ─────────────────────────────
 $(OUTDIR)/S1: $(DATA)
-	mkdir -p $(OUTDIR); gawk -f S1.awk $< > $@
+	mkdir -p $(OUTDIR); $(AWK) -f S1.awk $< > $@
 
 $(OUTDIR)/S2: $(DATA)
-	mkdir -p $(OUTDIR); gawk -f S2.awk $< > $@
+	mkdir -p $(OUTDIR); $(AWK) -f S2.awk $< > $@
 
 $(OUTDIR)/S3: $(DATA)
-	mkdir -p $(OUTDIR); gawk -f S3.awk $< > $@
+	mkdir -p $(OUTDIR); $(AWK) -f S3.awk $< > $@
 
 $(OUTDIR)/S4: $(DATA)
-	mkdir -p $(OUTDIR); gawk -f S4.awk $< > $@ 2>&1
+	mkdir -p $(OUTDIR); $(AWK) -f S4.awk $< > $@ 2>&1
 
 $(OUTDIR)/S5: $(DATA)
-	mkdir -p $(OUTDIR); gawk -f S5.awk $< > $@
+	mkdir -p $(OUTDIR); $(AWK) -f S5.awk $< > $@
 
 
 clean:
