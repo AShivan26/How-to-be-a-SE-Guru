@@ -79,6 +79,72 @@ local function print_trace(p)
   end
 end
 
+-- LINTER: Static analyzer for FSM rules
+local function lint(rules, initial)
+  print("\n=== FSM LINTER ===")
+  local warnings = 0
+  
+  -- Build set of all defined states
+  local defined_states = {}
+  for state_name in pairs(rules) do
+    defined_states[state_name] = true
+  end
+  
+  -- Build set of reachable states
+  local reachable = { [initial] = true }
+  local queue = { initial }
+  while #queue > 0 do
+    local current = table.remove(queue, 1)
+    if rules[current] and rules[current].transitions then
+      for _, next_state in pairs(rules[current].transitions) do
+        if not reachable[next_state] then
+          reachable[next_state] = true
+          table.insert(queue, next_state)
+        end
+      end
+    end
+  end
+  
+  -- Check for issues
+  for state_name, state_def in pairs(rules) do
+    
+    -- 1. Check for ghost states (undefined transition targets)
+    if state_def.transitions then
+      for event, target_state in pairs(state_def.transitions) do
+        if not defined_states[target_state] then
+          print(string.format("⚠️  GHOST STATE: [%s] event '%s' targets undefined state '%s'", 
+            state_name, event, target_state))
+          warnings = warnings + 1
+        end
+      end
+    end
+    
+    -- 2. Check for dead ends (no transitions, unless terminal)
+    if not state_def.transitions or next(state_def.transitions) == nil then
+      if state_name ~= "dead" and state_name ~= "finished" and state_name ~= "end" then
+        print(string.format("⚠️  DEAD END: [%s] has no outgoing transitions", state_name))
+        warnings = warnings + 1
+      end
+    end
+  end
+  
+  -- 3. Check for unreachable states
+  for state_name in pairs(defined_states) do
+    if not reachable[state_name] and state_name ~= initial then
+      print(string.format("⚠️  UNREACHABLE: [%s] cannot be reached from initial state '%s'", 
+        state_name, initial))
+      warnings = warnings + 1
+    end
+  end
+  
+  if warnings == 0 then
+    print("✓ No issues found!")
+  else
+    print(string.format("Total warnings: %d\n", warnings))
+  end
+end
+
+
 -- 2. Define the payload (Memory + Queues)
 local my_payload = {
   name = "Hero",
@@ -98,6 +164,8 @@ local my_payload = {
 
 print("=== STARTING TCO RPG BATTLE ===")
 
+-- Run linter before starting machine
+lint(rpg_rules, "idle")
 -- Boot up the machine! (Passing the rules, initial state, and payload memory)
 local final_memory = machine.start(rpg_rules, "idle", my_payload)
 
