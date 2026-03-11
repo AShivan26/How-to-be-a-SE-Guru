@@ -1,0 +1,16 @@
+digraph fsm {
+  moving -> idle [ label="stop" ]
+  moving -> dead [ label="die" ]
+  moving -> staggered [ label="hit" ]
+  moving -> attacking [ label="attack" ]
+  staggered -> idle [ label="recover" ]
+  staggered -> dead [ label="die" ]
+  idle -> moving [ label="walk" ]
+  idle -> dead [ label="die" ]
+  idle -> staggered [ label="hit" ]
+  idle -> attacking [ label="attack" ]
+  dead -> idle [ label="revive" ]
+  attacking -> idle [ label="recover" ]
+  attacking -> dead [ label="die" ]
+  attacking -> staggered [ label="hit" ]
+}
