@@ -103,7 +103,8 @@ local function lint(rules, initial)
         end
       end
     end
-  end
+  end 
+
   
   -- Check for issues
   for state_name, state_def in pairs(rules) do
@@ -144,7 +145,24 @@ local function lint(rules, initial)
   end
 end
 
+local function to_dot(rules)
+  local out = {"digraph fsm {"}
 
+  for state, def in pairs(rules) do
+    if def.transitions then
+      for event, target in pairs(def.transitions) do
+        local shown = type(target) == "function" and "guard" or target
+        out[#out + 1] = string.format(
+          '  %s -> %s [ label="%s" ]',
+          state, shown, event
+        )
+      end
+    end
+  end
+
+  out[#out + 1] = "}"
+  return table.concat(out, "\n")
+end
 -- 2. Define the payload (Memory + Queues)
 local my_payload = {
   name = "Hero",
@@ -166,6 +184,15 @@ print("=== STARTING TCO RPG BATTLE ===")
 
 -- Run linter before starting machine
 lint(rpg_rules, "idle")
+-- Run DOT Exporter
+local dot = to_dot(rpg_rules)
+
+local f = io.open("fsm.dot", "w")
+f:write(dot)
+f:close()
+
+print("\nDOT file written to fsm.dot\n")
+print(dot)
 -- Boot up the machine! (Passing the rules, initial state, and payload memory)
 local final_memory = machine.start(rpg_rules, "idle", my_payload)
 
